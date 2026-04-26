@@ -1,0 +1,38 @@
+{
+  "control": [
+    {
+      "event": "power_on",
+      "kb_key": "9"
+    },
+    {
+      "event": "start",
+      "label": "启动",
+      "kb_key": "8"
+    },
+    {
+      "event": "enable_record",
+      "label": "记录数据",
+      "kb_key": "m"
+    },
+    {
+      "event": "stop",
+      "label": "停止",
+      "kb_key": " "
+    },
+    {
+      "event": "init_pos",
+      "label": "复位",
+      "kb_key": "p"
+    },
+    {
+      "event": "maintain_pos",
+      "label": "保持位置",
+      "kb_key": "t"
+    },
+    {
+      "event": "change_mode",
+      "label": "切换模式",
+      "kb_key": "c"
+    }
+  ]
+}
