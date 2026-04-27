@@ -11,6 +11,8 @@
 #include <unordered_map>
 #include <fstream>
 #include <regex>
+#include <filesystem>
+#include <unistd.h>
 
 #define _ControlT 0.001
 
@@ -47,7 +49,22 @@ void ClearJointResetPositions()
 
 void LoadResetPositionsFromXML(const std::string &filename)
 {
-  std::ifstream ifs(filename);
+  // 仅尝试固定位置：当前工作目录向上两级（不尝试当前目录或一级上层）
+  std::ifstream ifs;
+  try
+  {
+    auto cwd = std::filesystem::current_path();
+    auto p = cwd.parent_path().parent_path() / filename;
+    std::cout << "LoadResetPositionsFromXML: try path: " << p << std::endl;
+    if (std::filesystem::exists(p))
+    {
+      ifs.open(p.string());
+      if (ifs)
+        std::cout << "LoadResetPositionsFromXML: found file at: " << p << std::endl;
+    }
+  }
+  catch (...) {}
+
   if (!ifs)
   {
     std::cout << "LoadResetPositionsFromXML: file not found: " << filename << std::endl;
@@ -286,6 +303,22 @@ void StateInitPos(const bitbot::KernelInterface &kernel, CifxKernel::ExtraData &
       // 平滑插值（余弦平滑）
       double pos = (t >= duration_val) ? target : (init_pos + (target - init_pos) * s);
       j->SetTargetPosition(pos);
+      // 调试日志：周期性打印复位关节信息，帮助定位为何不动
+      if ((static_cast<long long>(kernel.GetPeriodsCount()) % 1000) == 0 || t == 0.0 || t >= duration_val)
+      {
+        std::cout << "StateInitPos[elmo]: id=" << id
+                  << " init=" << init_pos
+                  << " target=" << target
+                  << " pos=" << pos
+                  << " t=" << t
+                  << " s=" << s
+                  << " dur=" << duration_val
+                  << " mode=" << j->GetMode()
+                  << " status=0x" << std::hex << j->GetStatus() << std::dec
+                  << " actual_cur=" << j->GetActualCurrent()
+                  << " target_cur=" << j->GetTargetCurrent()
+                  << std::endl;
+      }
     }
     else
     {
@@ -308,6 +341,21 @@ void StateInitPos(const bitbot::KernelInterface &kernel, CifxKernel::ExtraData &
     {
       double pos = (t >= duration_val) ? target : (init_pos + (target - init_pos) * s);
       j->SetTargetPosition(pos);
+      if ((static_cast<long long>(kernel.GetPeriodsCount()) % 1000) == 0 || t == 0.0 || t >= duration_val)
+      {
+        std::cout << "StateInitPos[pushrod]: id=" << id
+                  << " init=" << init_pos
+                  << " target=" << target
+                  << " pos=" << pos
+                  << " t=" << t
+                  << " s=" << s
+                  << " dur=" << duration_val
+                  << " mode=" << j->GetMode()
+                  << " status=0x" << std::hex << j->GetStatus() << std::dec
+                  << " actual_cur=" << j->GetActualCurrent()
+                  << " target_cur=" << j->GetTargetCurrent()
+                  << std::endl;
+      }
     }
     else
     {

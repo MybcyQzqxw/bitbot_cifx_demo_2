@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
 	kernel.RegisterEvent("to_fall_pos2", static_cast<bitbot::EventId>(Events::ToFallPos2), [](bitbot::EventValue, UserData &)
 											 { return static_cast<bitbot::StateId>(States::ToFallPos2); });
 											 
-	kernel.RegisterState("waiting", static_cast<bitbot::StateId>(States::Waiting), &StateWaiting, {static_cast<bitbot::EventId>(Events::InitPos), static_cast<bitbot::EventId>(Events::ToFallPos1), static_cast<bitbot::EventId>(Events::ToFallPos2)});
+	kernel.RegisterState("waiting", static_cast<bitbot::StateId>(States::Waiting), &StateWaiting, {static_cast<bitbot::EventId>(Events::InitPos)});
 	
 	kernel.RegisterState("init_pos", static_cast<bitbot::StateId>(States::InitPos), &StateInitPos, {static_cast<bitbot::EventId>(Events::ToFallPos1), static_cast<bitbot::EventId>(Events::ToFallPos2)});
 
