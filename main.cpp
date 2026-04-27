@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
 		return -1;
 	}
 
-	CifxKernel kernel("../../sc_arm.xml");
+	CifxKernel kernel("../../sc_bhr8fc2.xml");
 
 	kernel.RegisterConfigFunc(ConfigFunc);
 
@@ -39,11 +39,6 @@ int main(int argc, char const *argv[])
 	kernel.RegisterEvent("to_fall_pos2", static_cast<bitbot::EventId>(Events::ToFallPos2), [](bitbot::EventValue, UserData &)
 											 { return static_cast<bitbot::StateId>(States::ToFallPos2); });
 											 
-	kernel.RegisterEvent("change_mode", static_cast<bitbot::EventId>(Events::ChangeMode), [](bitbot::EventValue, UserData &)
-											 { return static_cast<bitbot::StateId>(States::ChangeMode); });
-											 
-	// kernel.RegisterState("waiting", static_cast<bitbot::StateId>(States::Waiting), &StateWaiting, {});
-
 	kernel.RegisterState("waiting", static_cast<bitbot::StateId>(States::Waiting), &StateWaiting, {static_cast<bitbot::EventId>(Events::InitPos), static_cast<bitbot::EventId>(Events::ToFallPos1), static_cast<bitbot::EventId>(Events::ToFallPos2)});
 	
 	kernel.RegisterState("init_pos", static_cast<bitbot::StateId>(States::InitPos), &StateInitPos, {static_cast<bitbot::EventId>(Events::ToFallPos1), static_cast<bitbot::EventId>(Events::ToFallPos2)});
@@ -52,8 +47,6 @@ int main(int argc, char const *argv[])
 
 	kernel.RegisterState("to_fall_pos2", static_cast<bitbot::StateId>(States::ToFallPos2), &StateToFallPos2, {});
 
-	kernel.RegisterState("change_mode", static_cast<bitbot::StateId>(States::ChangeMode), &StateChangeMode, {});
-	
 	kernel.SetFirstState(static_cast<bitbot::StateId>(States::Waiting));
 
 	kernel.Run();

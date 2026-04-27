@@ -93,7 +93,7 @@ void StateInitPos(const bitbot::KernelInterface &kernel, CifxKernel::ExtraData &
   joint4->SetTargetPosition(pos4);
 }
 
-void StateMaintainPos(const bitbot::KernelInterface &kernel, CifxKernel::ExtraData &extra_data, UserData &user_data)
+void StateToFallPos1(const bitbot::KernelInterface &kernel, CifxKernel::ExtraData &extra_data, UserData &user_data)
 {
   static bool init = false;
   static double target_pos1 = 0;
@@ -152,15 +152,61 @@ void StateMaintainPos(const bitbot::KernelInterface &kernel, CifxKernel::ExtraDa
   joint4->SetTargetCurrent(tau4);
 }
 
-void StateChangeMode(const bitbot::KernelInterface &kernel, CifxKernel::ExtraData &extra_data, UserData &user_data)
+void StateToFallPos2(const bitbot::KernelInterface &kernel, CifxKernel::ExtraData &extra_data, UserData &user_data)
 {
-  static bool once = false;
-  if (!once)
+  static bool init = false;
+  static double target_pos1 = 0;
+  static double target_pos2 = 0;
+  static double target_pos3 = 0;
+  static double target_pos4 = 0;
+
+  // PD 参数（根据实际电机调整）
+  static constexpr double Kp1 = 50, Kd1 = 0.5;
+  static constexpr double Kp2 = 50, Kd2 = 0.5;
+  static constexpr double Kp3 = 50, Kd3 = 0.5;
+  static constexpr double Kp4 = 50, Kd4 = 0.5;
+
+  // static constexpr double Kp1 = 100, Kd1 = 1.0;
+  // static constexpr double Kp2 = 100, Kd2 = 1.0;
+  // static constexpr double Kp3 = 100, Kd3 = 1.0;
+  // static constexpr double Kp4 = 100, Kd4 = 1.0;
+  
+  if (!init)
   {
-    // joint1->SetTargetCurrent(0);
-    // joint1->SetMode(bitbot::CANopenMotorMode::CST);
-    // joint2->SetTargetCurrent(0);
-    // joint2->SetMode(bitbot::CANopenMotorMode::CST);
-    once = true;
+    target_pos1 = joint1->GetActualPosition();
+    target_pos2 = joint2->GetActualPosition();
+    target_pos3 = joint3->GetActualPosition();
+    target_pos4 = joint4->GetActualPosition();
+
+    joint1->SetTargetCurrent(0);
+    joint1->SetMode(bitbot::CANopenMotorMode::CST);
+    joint2->SetTargetCurrent(0);
+    joint2->SetMode(bitbot::CANopenMotorMode::CST);
+    joint3->SetTargetCurrent(0);
+    joint3->SetMode(bitbot::CANopenMotorMode::CST);
+    joint4->SetTargetCurrent(0);
+    joint4->SetMode(bitbot::CANopenMotorMode::CST);
+    init = true;
   }
+
+  // PD 控制: tau = Kp * (target - actual) - Kd * velocity
+  double err1 = target_pos1 - joint1->GetActualPosition();
+  double err2 = target_pos2 - joint2->GetActualPosition();
+  double err3 = target_pos3 - joint3->GetActualPosition();
+  double err4 = target_pos4 - joint4->GetActualPosition();
+
+  double vel1 = joint1->GetActualVelocity();
+  double vel2 = joint2->GetActualVelocity();
+  double vel3 = joint3->GetActualVelocity();
+  double vel4 = joint4->GetActualVelocity();
+
+  double tau1 = Kp1 * err1 - Kd1 * vel1;
+  double tau2 = Kp2 * err2 - Kd2 * vel2;
+  double tau3 = Kp3 * err3 - Kd3 * vel3;
+  double tau4 = Kp4 * err4 - Kd4 * vel4;
+
+  joint1->SetTargetCurrent(tau1);
+  joint2->SetTargetCurrent(tau2);
+  joint3->SetTargetCurrent(tau3);
+  joint4->SetTargetCurrent(tau4);
 }

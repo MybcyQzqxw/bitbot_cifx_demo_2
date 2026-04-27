@@ -33,11 +33,6 @@
       "event": "to_fall_pos2",
       "label": "摔倒2",
       "kb_key": "2"
-    },
-    {
-      "event": "change_mode",
-      "label": "切换模式",
-      "kb_key": "c"
     }
   ]
 }
