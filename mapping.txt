@@ -1,0 +1,11 @@
+lleg1	向外变大向内变小		rleg1	向内变大向外变小
+lleg2	向外变大向内变小		rleg2	向内变大向外变小
+lleg3	向前变小向后变大		rleg3	向前变小向后变大
+lleg4	屈膝变大		       rleg4	屈膝变大
+lleg5	踮脚尖变大		       rleg5	踮脚尖变大
+lleg6	向外变大向内变小		rleg6	向内变大向外变小
+			
+larm1	向前变小向后变大		rarm1	向前变小向后变大
+larm2	向外变大向内变小		rarm2	向外变小向内变大
+larm3	向外变大向内变小		rarm3	向外变小向内变大
+larm4	屈肘变大		       rarm4	屈肘变大
