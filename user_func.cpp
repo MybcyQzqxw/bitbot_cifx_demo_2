@@ -663,9 +663,6 @@ void StateMaintainPos(const bitbot::KernelInterface &kernel, CifxKernel::ExtraDa
 void StateToFallPos1(const bitbot::KernelInterface &kernel, CifxKernel::ExtraData &extra_data, UserData &user_data)
 {
   // 在进入此状态时，假定所有关节已处于 CST（电流/力矩）模式。
-  // 两阶段顺序运动：
-  //  - 阶段1 (t1)：关节顺序 6,5,7,0（与 fall1_positions.xml 中定义的阶段1一致）运动到目标
-  //  - 阶段2 (t2)：关节 14,15,20,22 运动到目标
   static bool init = false;
   static double start_time = 0.0;
   static std::unordered_map<int, double> init_positions;
